@@ -1,36 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import LoginPage from './Pages/LoginPage.jsx';
 
 function App() {
-  const [serverMessage, setServerMessage] = useState("");
+  const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8888/api/test");
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('access_token');
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        setServerMessage(data.message);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setServerMessage("Failed to connect to the server. Is it running?");
-      }
-    };
-
-    fetchData();
+    if (token) {
+      setAccessToken(token);
+      window.history.pushState({}, document.title, '/');
+    }
   }, []);
 
   return (
-    <div>
-      <h1>Migrator</h1>
-      <h2>Connecting Frontend to Backend...</h2>
-      <p>
-        <strong>Message from Server:</strong> {serverMessage}
-      </p>
+    <div className="App">
+      {accessToken ? (
+        <div>
+          <h1>Logged In Successfully!</h1>
+        </div>
+      ) : (
+        <LoginPage />
+      )}
     </div>
   );
 }
