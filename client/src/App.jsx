@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import LoginPage from './Pages/LoginPage.jsx';
+import { LoginPage } from './Pages/LoginPage.jsx';
+import { DashboardPage } from './Pages/DashboardPage.jsx';
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
@@ -7,6 +8,7 @@ function App() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('access_token');
+    // console.log('App.jsx:', token);
 
     if (token) {
       setAccessToken(token);
@@ -17,9 +19,7 @@ function App() {
   return (
     <div className="App">
       {accessToken ? (
-        <div>
-          <h1>Logged In Successfully!</h1>
-        </div>
+        <DashboardPage accessToken={accessToken} />
       ) : (
         <LoginPage />
       )}
