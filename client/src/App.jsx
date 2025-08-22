@@ -3,7 +3,9 @@ import { LoginPage } from './Pages/LoginPage.jsx';
 import { DashboardPage } from './Pages/DashboardPage.jsx';
 
 function App() {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem('spotify_accesstoken')
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -12,6 +14,7 @@ function App() {
 
     if (token) {
       setAccessToken(token);
+      localStorage.setItem('spotify_accesstoken', token);
       window.history.pushState({}, document.title, '/');
     }
   }, []);
