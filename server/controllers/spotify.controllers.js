@@ -28,4 +28,28 @@ const handleCallBack = (req, res) => {
   );
 };
 
-export { getLoginUrl, handleCallBack };
+const getPlaylists = (req, res) => {
+  // console.log('Authorization', req.headers.authorization);
+
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  // console.log('Access', accessToken);
+
+  if (!accessToken) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
+  spotifyApi.setAccessToken(accessToken);
+  spotifyApi
+    .getMe()
+    .then((data) => spotifyApi.getUserPlaylists(data.body.id))
+    .then((data) => {
+      res.json(data.body.items);
+    })
+    .catch((err) => {
+      console.log('Error fetching spotify playlists', err);
+      res
+        .status(401)
+        .json({ error: 'Failed to fetch spotify playlists from backend' });
+    });
+};
+export { getLoginUrl, handleCallBack, getPlaylists };
