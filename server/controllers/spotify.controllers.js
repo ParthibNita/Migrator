@@ -24,7 +24,7 @@ const handleCallBack = asyncHandler(async (req, res) => {
   const me = await spotifyApi.getMe();
   const user = await User.findOneAndUpdate(
     { spotifyId: me.body.id },
-    { displayName: me.body.display_name, refreshToken: refresh_token },
+    { displayName: me.body.display_name },
     { upsert: true, new: true }
   );
   const sessionToken = crypto.randomBytes(32).toString('hex');
@@ -35,6 +35,7 @@ const handleCallBack = asyncHandler(async (req, res) => {
   await Session.create({
     sessionToken,
     userId: user._id,
+    refreshToken: refresh_token,
     expiry,
   });
 
@@ -68,16 +69,20 @@ const getPlaylists = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(200, data.body.items, 'Playlists fetched successfully')
     );
+  // res.send('playlists');
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const user = req.user;
-  spotifyApi.setRefreshToken(user.refreshToken);
+  // console.log('in Refreshing access token');
+  // console.log('req.user', req.session);
+  const session = req.session;
+  spotifyApi.setRefreshToken(session.refreshToken);
 
   const data = await spotifyApi.refreshAccessToken();
   const newAccessToken = data.body['access_token'];
   const newExpiresIn = data.body['expires_in'];
-
+  // console.log('The access token has been refreshed!');
+  // console.log('newAccessToken', newAccessToken);
   res
     .status(200)
     .json(
