@@ -11,6 +11,10 @@ const sessionSchema = new Schema({
     required: true,
     unique: true,
   },
+  refreshToken: {
+    type: String,
+    required: true,
+  },
   expiry: {
     type: Date,
     required: true,
