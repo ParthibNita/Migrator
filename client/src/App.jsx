@@ -10,17 +10,21 @@ function App() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('access_token');
-    // console.log('App.jsx:', token);
+    const expiry = urlParams.get('expires_in');
 
-    if (token) {
+    if (token && expiry) {
       setAccessToken(token);
       localStorage.setItem('spotify_accesstoken', token);
+      localStorage.setItem(
+        'spotify_expiry',
+        Date.now() + parseInt(expiry) * 1000
+      );
       window.history.pushState({}, document.title, '/');
     }
   }, []);
 
   return (
-    <div className="App">
+    <div className="App text-center p-4">
       {accessToken ? (
         <DashboardPage accessToken={accessToken} />
       ) : (

@@ -1,10 +1,10 @@
-const LoginPage = () => {
+export const LoginPage = () => {
   const handleLogin = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8888/api/spotify/login');
       const data = await response.json();
 
-      window.location.href = data.url;
+      window.location.href = data.data.url;
     } catch (error) {
       console.error('Error during login:', error);
     }
@@ -18,5 +18,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;
