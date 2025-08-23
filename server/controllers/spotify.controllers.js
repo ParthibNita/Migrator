@@ -99,10 +99,28 @@ const getCurrentUser = (req, res) => {
   res.status(200).json(new ApiResponse(200, user, 'User fetched successfully'));
 };
 
+const logOutUser = asyncHandler(async (req, res) => {
+  const { sessionToken } = req.cookies;
+  if (!sessionToken) {
+    return res
+      .status(204)
+      .json(new ApiResponse(204, {}, 'No session to clear'));
+  }
+  await Session.findByIdAndDelete({ _id: req.session._id });
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  };
+  return res
+    .status(200)
+    .clearCookie('sessionToken', options)
+    .json(new ApiResponse(200, {}, 'User logged out successfully'));
+});
 export {
   getLoginUrl,
   handleCallBack,
   getPlaylists,
   refreshAccessToken,
   getCurrentUser,
+  logOutUser,
 };
