@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../api/spotify.js';
 export const useAuth = () => {
   const [accessToken, setAccessToken] = useState(null);
@@ -25,7 +25,7 @@ export const useAuth = () => {
         const localToken = localStorage.getItem('spotify_accesstoken');
         if (localToken) {
           const { data } = await apiClient.get('/currentUser');
-          console.log('User data in useAuth:', data);
+          // console.log('User data in useAuth:', data);
           setUser(data.data);
           setAccessToken(localToken);
         }
@@ -41,5 +41,17 @@ export const useAuth = () => {
     verifyUser();
   }, []);
 
-  return { accessToken, user, loading };
+  const logout = useCallback(async () => {
+    try {
+      await apiClient.post('/logout');
+    } catch (error) {
+      console.error('Error during logout in useAuth:', error);
+    } finally {
+      localStorage.clear();
+      setUser(null);
+      setAccessToken(null);
+      window.location.href = '/';
+    }
+  }, []);
+  return { accessToken, user, loading, logout };
 };
