@@ -94,4 +94,15 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     );
 });
 
-export { getLoginUrl, handleCallBack, getPlaylists, refreshAccessToken };
+const getCurrentUser = (req, res) => {
+  const user = req.user;
+  res.status(200).json(new ApiResponse(200, user, 'User fetched successfully'));
+};
+
+export {
+  getLoginUrl,
+  handleCallBack,
+  getPlaylists,
+  refreshAccessToken,
+  getCurrentUser,
+};

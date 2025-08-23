@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  getCurrentUser,
   getLoginUrl,
   getPlaylists,
   handleCallBack,
@@ -13,5 +14,6 @@ router.route('/login').get(getLoginUrl);
 router.route('/callback').get(handleCallBack);
 router.route('/playlists').get(isTokenValid, getPlaylists);
 router.route('/refreshToken').post(isTokenValid, refreshAccessToken);
+router.route('/currentUser').get(isTokenValid, getCurrentUser);
 
 export default router;
