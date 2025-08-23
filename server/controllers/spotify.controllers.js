@@ -24,7 +24,7 @@ const handleCallBack = asyncHandler(async (req, res) => {
   const me = await spotifyApi.getMe();
   const user = await User.findOneAndUpdate(
     { spotifyId: me.body.id },
-    { displayName: me.body.display_name },
+    { displayName: me.body.display_name, images: me.body.images },
     { upsert: true, new: true }
   );
   const sessionToken = crypto.randomBytes(32).toString('hex');
