@@ -116,6 +116,26 @@ const logOutUser = asyncHandler(async (req, res) => {
     .clearCookie('sessionToken', options)
     .json(new ApiResponse(200, {}, 'User logged out successfully'));
 });
+
+const getOnePlaylist = asyncHandler(async (req, res) => {
+  // console.log('in get user plalist');
+
+  const { id } = req.params;
+
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  if (!accessToken) {
+    throw new ApiError(401, 'Access token is missing');
+  }
+
+  spotifyApi.setAccessToken(accessToken);
+
+  const data = await spotifyApi.getPlaylist(id);
+  // console.log('data', data);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, data.body, 'Playlists fetched successfully'));
+});
 export {
   getLoginUrl,
   handleCallBack,
@@ -123,4 +143,5 @@ export {
   refreshAccessToken,
   getCurrentUser,
   logOutUser,
+  getOnePlaylist,
 };
