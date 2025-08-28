@@ -18,6 +18,12 @@ const userSchema = new Schema(
         width: Number,
       },
     ],
+    youtubeAccessToken: {
+      type: String,
+    },
+    youtubeRefreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
