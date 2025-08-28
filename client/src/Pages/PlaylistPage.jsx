@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button.jsx';
 import { apiClient } from '../api/spotify.js';
 import { useAuth } from '../hooks/useAuth.js';
+import Loader from '../components/Loader.jsx';
 
 export const PlaylistPage = () => {
   const { id } = useParams();
@@ -50,7 +51,11 @@ export const PlaylistPage = () => {
   };
 
   if (loading)
-    return <p className="text-white text-center">Loading playlist...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader height={300} />
+      </div>
+    );
 
   return (
     <div className="p-8 text-white">
@@ -69,7 +74,13 @@ export const PlaylistPage = () => {
               disabled={transferring}
               className="mt-4"
             >
-              {transferring ? 'Transferring...' : 'Transfer to YouTube'}
+              {transferring ? (
+                <div className="min-h-screen flex items-center justify-center">
+                  <Loader height={80} />
+                </div>
+              ) : (
+                'Transfer to YouTube'
+              )}
             </Button>
           ) : (
             <Button onClick={handleYoutubeLogin} className="mt-4">

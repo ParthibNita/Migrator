@@ -3,6 +3,7 @@ import { getUserPlaylists } from '../api/spotify.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from './../hooks/useAuth.js';
 import { Link } from 'react-router-dom';
+import Loader from '../components/Loader.jsx';
 export const DashboardPage = () => {
   const { accessToken } = useAuth();
   const [playlists, setPlaylists] = useState([]);
@@ -28,15 +29,13 @@ export const DashboardPage = () => {
   // console.log('Playlists state:', playlists);
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <h1 className="text-3xl font-bold mb-6 text-cyan-950">Your Playlists</h1>
-
       {loading && (
         <div className="min-h-screen flex items-center justify-center">
-          <p className="text-cyan-600">Loading...</p>
+          <Loader height={300} />
         </div>
       )}
       {error && <p className="text-red-500">Error: {error}</p>}
-
+      <h1 className="text-3xl font-bold mb-6 text-cyan-950">Your Playlists</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {playlists.map((list) => (
           <Link to={`/playlists/${list.id}`} key={list.id}>

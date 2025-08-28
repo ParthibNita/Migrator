@@ -4,14 +4,15 @@ import { DashboardPage } from './Pages/DashboardPage.jsx';
 import { useAuth } from './hooks/useAuth.js';
 import Navbar from './components/Navbar.jsx';
 import { PlaylistPage } from './Pages/PlaylistPage.jsx';
+import Loader from './components/Loader.jsx';
 
 function App() {
   const { accessToken, loading, user } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-        <p className="text-cyan-600">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader height={300} />
       </div>
     );
   }
