@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button.jsx';
 import { apiClient } from '../api/spotify.js';
+import { useAuth } from '../hooks/useAuth.js';
 
 export const PlaylistPage = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [transferring, setTransferring] = useState(false);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
         setLoading(true);
-        const { data } = await apiClient.get(`/playlists/${id}`);
+        const { data } = await apiClient.get(`/spotify/playlists/${id}`);
         setPlaylist(data.data);
       } catch (error) {
         console.error('Failed to fetch playlist', error);
@@ -22,6 +26,28 @@ export const PlaylistPage = () => {
 
     fetchPlaylist();
   }, [id]);
+
+  const handleYoutubeLogin = async () => {
+    try {
+      const { data } = await apiClient.get('/youtube/login');
+      window.location.href = data.data.url;
+    } catch (error) {
+      console.error('Failed to get YouTube login URL', error);
+    }
+  };
+
+  const handleTransfer = async () => {
+    try {
+      setTransferring(true);
+      await apiClient.post(`/youtube/transfer/${id}`);
+      alert('Playlist transfer complete!');
+    } catch (error) {
+      console.error('Failed to transfer playlist', error);
+      alert('Playlist transfer failed.');
+    } finally {
+      setTransferring(false);
+    }
+  };
 
   if (loading)
     return <p className="text-white text-center">Loading playlist...</p>;
@@ -37,6 +63,19 @@ export const PlaylistPage = () => {
         <div>
           <h1 className="text-5xl font-bold">{playlist?.name}</h1>
           <p className="text-neutral-400 mt-2">{playlist?.description}</p>
+          {user?.youtubeAccessToken ? (
+            <Button
+              onClick={handleTransfer}
+              disabled={transferring}
+              className="mt-4"
+            >
+              {transferring ? 'Transferring...' : 'Transfer to YouTube'}
+            </Button>
+          ) : (
+            <Button onClick={handleYoutubeLogin} className="mt-4">
+              Connect YouTube to Transfer
+            </Button>
+          )}
         </div>
       </div>
 
