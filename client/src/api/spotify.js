@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8888/api/spotify';
+const API_URL = 'http://127.0.0.1:8888/api';
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
@@ -36,7 +36,7 @@ apiClient.interceptors.response.use(
       }
       try {
         // console.log('Refreshing token...');
-        const { data } = await apiClient.post('/refreshToken');
+        const { data } = await apiClient.post('/spotify/refreshToken');
         // console.log('back finally');
 
         const newAccessToken = data.data.accessToken;
@@ -62,5 +62,5 @@ apiClient.interceptors.response.use(
 export const getUserPlaylists = async () => {
   // console.log('trying');
 
-  return await apiClient.get('/playlists');
+  return await apiClient.get('/spotify/playlists');
 };

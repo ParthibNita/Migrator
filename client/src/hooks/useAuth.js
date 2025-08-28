@@ -24,7 +24,7 @@ export const useAuth = () => {
 
         const localToken = localStorage.getItem('spotify_accesstoken');
         if (localToken) {
-          const { data } = await apiClient.get('/currentUser');
+          const { data } = await apiClient.get('/spotify/currentUser');
           // console.log('User data in useAuth:', data);
           setUser(data.data);
           setAccessToken(localToken);
@@ -43,7 +43,7 @@ export const useAuth = () => {
 
   const logout = useCallback(async () => {
     try {
-      await apiClient.post('/logout');
+      await apiClient.post('/spotify/logout');
     } catch (error) {
       console.error('Error during logout in useAuth:', error);
     } finally {
