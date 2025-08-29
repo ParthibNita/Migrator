@@ -5,6 +5,7 @@ import { useAuth } from './hooks/useAuth.js';
 import Navbar from './components/Navbar.jsx';
 import { PlaylistPage } from './Pages/PlaylistPage.jsx';
 import Loader from './components/Loader.jsx';
+import Background from './components/Background.jsx';
 
 function App() {
   const { accessToken, loading, user } = useAuth();
@@ -18,7 +19,8 @@ function App() {
   }
   return (
     <Router>
-      <div className="App bg-neutral-900 min-h-screen text-white">
+      <div className="App  min-h-screen relative">
+        <Background />
         {user && <Navbar />}
         <Routes>
           <Route
