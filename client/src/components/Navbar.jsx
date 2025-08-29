@@ -1,4 +1,3 @@
-import { useAuth } from './../hooks/useAuth.js';
 import { AvatarFallback, Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,9 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import useAuthStore from '../store/AuthStore.jsx';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   //   console.log('User in Navbar:', user);
 
   if (!user) return null;
