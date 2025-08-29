@@ -1,6 +1,9 @@
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
 const API_URL = 'http://127.0.0.1:8888/api';
+
+export const socket = io('http://127.0.0.1:8888');
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -15,6 +18,11 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+
+    if (socket.id) {
+      config.headers['x-socket-id'] = socket.id;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -29,7 +37,7 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalReq._retry) {
       originalReq._retry = true;
-      if (originalReq.url === '/refreshToken') {
+      if (originalReq.url === '/spotify/refreshToken') {
         localStorage.clear();
         window.location.href = '/';
         return Promise.reject(error);

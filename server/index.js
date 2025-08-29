@@ -26,6 +26,11 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use((req, _, next) => {
+  req.io = io;
+  next();
+});
+
 app.use(
   cors({
     origin: 'http://127.0.0.1:5173',
