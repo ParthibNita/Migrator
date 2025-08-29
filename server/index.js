@@ -3,11 +3,28 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './db/index.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT;
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: 'http://127.0.0.1:5173',
+    methods: ['GET', 'POST'],
+  },
+});
+
+io.on('connection', (socket) => {
+  // console.log('a user connected', socket.id);
+  socket.on('disconnect', () => {
+    // console.log('user disconnected', socket.id);
+  });
+});
 
 app.use(
   cors({
@@ -39,8 +56,8 @@ app.use((err, _, res, __) => {
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    server.listen(PORT, () => {
+      console.log(`🚀 Server is running on http://127.0.0.1:${PORT}`);
     });
   })
   .catch((err) => {
