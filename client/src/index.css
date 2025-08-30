@@ -134,3 +134,31 @@
 .animate-float {
   animation: float 10s ease-in-out infinite;
 }
+
+.typewriter {
+  overflow: hidden;
+  /* border-right: 2px solid white; */
+  white-space: nowrap;
+  animation:
+    typing 4s steps(40, end) 0.4s forwards,
+    blink-caret 0.8s step-end 8;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: white;
+  }
+}
