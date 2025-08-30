@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { apiClient, getUserPlaylists } from '../api/spotify.js';
 
 const useAuthStore = create((set) => ({
-  accessToken: null,
+  accessToken: localStorage.getItem('spotify_accesstoken') || null,
   user: null,
   playlists: [],
   loading: true,
@@ -40,6 +40,18 @@ const useAuthStore = create((set) => ({
       set({ loading: false });
     }
   },
+
+  login: async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8888/api/spotify/login');
+      const data = await response.json();
+
+      window.location.href = data.data.url;
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+  },
+
   logout: async () => {
     try {
       await apiClient.post('/spotify/logout');
@@ -47,8 +59,7 @@ const useAuthStore = create((set) => ({
       console.error('Error during logout in useAuth:', error);
     } finally {
       localStorage.clear();
-      set({ user: null, accessToken: null });
-      window.location.href = '/';
+      set({ user: null, accessToken: null, playlists: [], loading: false });
     }
   },
 }));

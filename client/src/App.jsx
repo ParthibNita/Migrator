@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { LoginPage } from './Pages/LoginPage.jsx';
 import { DashboardPage } from './Pages/DashboardPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import { PlaylistPage } from './Pages/PlaylistPage.jsx';
@@ -9,9 +8,10 @@ import useAuthStore from './store/AuthStore.jsx';
 import { useEffect } from 'react';
 import { HomePage } from './Pages/HomePage.jsx';
 import AuthGuard from './components/AuthGuard.jsx';
+import Layout from './components/Layout.jsx';
 
 function App() {
-  const { accessToken, loading, verifyUser, user } = useAuthStore();
+  const { loading, verifyUser, user } = useAuthStore();
 
   useEffect(() => {
     verifyUser();
@@ -26,28 +26,19 @@ function App() {
             <Loader height={300} />
           </div>
         ) : (
-          <>
-            {user && <Navbar />}
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <AuthGuard>
-                    <DashboardPage />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/playlists/:id"
-                element={
-                  <AuthGuard>
-                    <PlaylistPage />
-                  </AuthGuard>
-                }
-              />
-            </Routes>
-          </>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              element={
+                <AuthGuard>
+                  <Layout />
+                </AuthGuard>
+              }
+            >
+              <Route path="/playlists/:id" element={<PlaylistPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Route>
+          </Routes>
         )}
       </div>
     </Router>
