@@ -46,7 +46,7 @@ const handleCallBack = asyncHandler(async (req, res) => {
   res.cookie('sessionToken', sessionToken, options);
 
   res.redirect(
-    `http://127.0.0.1:5173/?access_token=${access_token}&expires_in=${expires_in}`
+    `http://127.0.0.1:5173/dashboard?access_token=${access_token}&expires_in=${expires_in}`
   );
 });
 

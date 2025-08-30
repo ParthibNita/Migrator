@@ -7,6 +7,8 @@ import Loader from './components/Loader.jsx';
 import Background from './components/Background.jsx';
 import useAuthStore from './store/AuthStore.jsx';
 import { useEffect } from 'react';
+import { HomePage } from './Pages/HomePage.jsx';
+import AuthGuard from './components/AuthGuard.jsx';
 
 function App() {
   const { accessToken, loading, verifyUser, user } = useAuthStore();
@@ -27,13 +29,22 @@ function App() {
           <>
             {user && <Navbar />}
             <Routes>
+              <Route path="/" element={<HomePage />} />
               <Route
-                path="/"
-                element={accessToken ? <DashboardPage /> : <LoginPage />}
+                path="/dashboard"
+                element={
+                  <AuthGuard>
+                    <DashboardPage />
+                  </AuthGuard>
+                }
               />
               <Route
                 path="/playlists/:id"
-                element={accessToken ? <PlaylistPage /> : <LoginPage />}
+                element={
+                  <AuthGuard>
+                    <PlaylistPage />
+                  </AuthGuard>
+                }
               />
             </Routes>
           </>
