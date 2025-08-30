@@ -1,11 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Text, Float } from '@react-three/drei';
+import { OrbitControls, Stars, Float } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, ArrowRight, Music, Youtube, Sparkles } from 'lucide-react';
+import { Typewriter } from './../components/TypewriterAnim.jsx';
 
 const AnimatedSphere = () => {
   const meshRef = useRef();
@@ -43,7 +44,7 @@ const FloatingNote = ({ position, rotationSpeed }) => {
         <meshStandardMaterial
           color="#FF0000"
           emissive="#FF0000"
-          emissiveIntensity={0.3}
+          emissiveIntensity={0.5}
         />
       </mesh>
     </Float>
@@ -82,13 +83,13 @@ const Particles = ({ count = 100 }) => {
 };
 
 export const HomePage = () => {
-  const { accessToken, login, user } = useAuthStore();
+  const { accessToken, login } = useAuthStore();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleStart = async () => {
     if (accessToken) {
-      navigate('/dashboard', { replace: true });
+      navigate('/dashboard');
     } else {
       login();
     }
@@ -96,7 +97,7 @@ export const HomePage = () => {
 
   return (
     <div className="relative w-full h-screen bg-gradient-to-br from-neutral-900 via-black to-neutral-900 overflow-hidden">
-      <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
+      <Canvas camera={{ position: [0, 5, 5], fov: 69 }}>
         <ambientLight intensity={0.3} />
         <pointLight position={[10, 10, 10]} intensity={1.5} color="#1DB954" />
         <pointLight position={[-10, -10, -10]} intensity={1} color="#FF0000" />
@@ -110,7 +111,7 @@ export const HomePage = () => {
           fade
           speed={0.5}
         />
-        <Particles count={200} />
+        <Particles count={800} />
 
         <AnimatedSphere />
         <FloatingNote position={[2, 1, 0]} rotationSpeed={0.8} />
@@ -130,41 +131,39 @@ export const HomePage = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center px-4">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, type: 'spring' }}
-          className="mb-8"
-        >
-          <div className="w-24 h-24 bg-gradient-to-br from-green-600 to-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-green-500/20">
-            <Music className="w-12 h-12 text-white" />
-          </div>
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 1, delay: 0.2 }}
           className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-green-400 to-red-400 bg-clip-text text-transparent"
         >
           MIGRATOR
         </motion.h1>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-neutral-300 mb-8 max-w-2xl"
+          transition={{ duration: 1, delay: 0.4 }}
+          className="text-xl md:text-2xl text-neutral-300 mb-8 max-w-2xl text-center md:text-left"
         >
-          Seamlessly transfer your music between{' '}
-          <span className="text-green-400 font-semibold">Spotify</span> and{' '}
-          <span className="text-red-400 font-semibold">YouTube Music</span>
-        </motion.p>
+          <Typewriter text="Transfer your music between " delay={0.4} />
+          <Typewriter
+            text="Spotify"
+            delay={1.2}
+            className="text-green-400 font-semibold"
+          />
+          <Typewriter text=" and " delay={1.8} />
+          <Typewriter
+            text="YouTube Music"
+            delay={2.0}
+            className="text-red-400 font-semibold"
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 1, delay: 0.6 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl"
         >
           {[
@@ -186,7 +185,7 @@ export const HomePage = () => {
           ].map((item, index) => (
             <div
               key={index}
-              className="bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10"
+              className="bg-white/5 backdrop-blur-xs rounded-xl p-6 border border-white/10"
             >
               <item.icon className={`w-8 h-8 mx-auto mb-3 ${item.color}`} />
               <p className="text-neutral-200 font-medium">{item.text}</p>
@@ -197,7 +196,7 @@ export const HomePage = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 1, delay: 0.8 }}
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
         >
@@ -232,7 +231,7 @@ export const HomePage = () => {
           transition={{ duration: 1, delay: 1.2 }}
           className="absolute bottom-6 text-neutral-500 text-sm"
         >
-          © 2025 Migrator • Made with ❤️ for music lovers
+          © 2025 Migrator • Made for music lovers 🎸
         </motion.div>
       </div>
 
