@@ -1,56 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button.jsx';
-import { apiClient } from '../api/spotify.js';
-import { useAuth } from '../hooks/useAuth.js';
+import { useQuery } from '@tanstack/react-query';
 import Loader from '../components/Loader.jsx';
+import useAuthStore from '../store/AuthStore.jsx';
+import usePlaylistStore from '../store/PlaylistStore.jsx';
+import { apiClient } from '../api/spotify.js';
 
+const fetchPlaylist = async ({ queryKey }) => {
+  const [_, id] = queryKey;
+  const { data } = await apiClient.get(`/spotify/playlists/${id}`);
+  return data.data;
+};
 export const PlaylistPage = () => {
   const { id } = useParams();
-  const { user } = useAuth();
-  const [playlist, setPlaylist] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [transferring, setTransferring] = useState(false);
+  const { user } = useAuthStore();
+  const { handleTransfer, handleYoutubeLogin, transferring } =
+    usePlaylistStore();
 
-  useEffect(() => {
-    const fetchPlaylist = async () => {
-      try {
-        setLoading(true);
-        const { data } = await apiClient.get(`/spotify/playlists/${id}`);
-        setPlaylist(data.data);
-      } catch (error) {
-        console.error('Failed to fetch playlist', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: playlist, isLoading } = useQuery({
+    queryKey: ['playlist', id],
+    queryFn: fetchPlaylist,
+  });
 
-    fetchPlaylist();
-  }, [id]);
-
-  const handleYoutubeLogin = async () => {
-    try {
-      const { data } = await apiClient.get('/youtube/login');
-      window.location.href = data.data.url;
-    } catch (error) {
-      console.error('Failed to get YouTube login URL', error);
-    }
-  };
-
-  const handleTransfer = async () => {
-    try {
-      setTransferring(true);
-      await apiClient.post(`/youtube/transfer/${id}`);
-      alert('Playlist transfer complete!');
-    } catch (error) {
-      console.error('Failed to transfer playlist', error);
-      alert('Playlist transfer failed.');
-    } finally {
-      setTransferring(false);
-    }
-  };
-
-  if (loading)
+  if (isLoading)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader height={300} />
@@ -70,9 +43,9 @@ export const PlaylistPage = () => {
           <p className="text-neutral-400 mt-2">{playlist?.description}</p>
           {user?.youtubeAccessToken ? (
             <Button
-              onClick={handleTransfer}
+              onClick={() => handleTransfer(id)}
               disabled={transferring}
-              className="mt-4"
+              className="mt-4 cursor-pointer"
             >
               {transferring ? (
                 <div className="min-h-screen flex items-center justify-center">
@@ -83,7 +56,10 @@ export const PlaylistPage = () => {
               )}
             </Button>
           ) : (
-            <Button onClick={handleYoutubeLogin} className="mt-4">
+            <Button
+              onClick={handleYoutubeLogin}
+              className="mt-4 cursor-pointer"
+            >
               Connect YouTube to Transfer
             </Button>
           )}
