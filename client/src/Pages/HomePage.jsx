@@ -132,12 +132,22 @@ export const HomePage = () => {
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center px-4">
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 30, scale: 3 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-green-400 to-red-400 bg-clip-text text-transparent"
+          className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-green-400 to-red-400 bg-clip-text text-transparent relative overflow-hidden"
         >
           MIGRATOR
+          <motion.span
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent transform -skew-x-12"
+            initial={{ x: '-150%', opacity: 0 }}
+            animate={{ x: '150%', opacity: 1 }}
+            transition={{
+              duration: 2.5,
+              delay: 0.8,
+              ease: 'easeInOut',
+            }}
+          />
         </motion.h1>
 
         <motion.div

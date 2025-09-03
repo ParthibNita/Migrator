@@ -53,14 +53,29 @@ export const DashboardPage = () => {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 min-h-screen">
-      <motion.h1
-        className="text-3xl font-bold mb-6 text-green-900"
+      <motion.div
+        className="text-center mb-8"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        Your Playlists
-      </motion.h1>
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-green-400 to-red-400 bg-clip-text text-transparent"
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
+          Your Playlists
+        </motion.h1>
+        <motion.p
+          className="text-lg text-neutral-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          Ready to transfer your music journey
+        </motion.p>
+      </motion.div>
 
       <motion.div
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
