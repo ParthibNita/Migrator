@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button.jsx';
 import { useQuery } from '@tanstack/react-query';
@@ -6,6 +6,7 @@ import Loader from '../components/Loader.jsx';
 import useAuthStore from '../store/AuthStore.jsx';
 import usePlaylistStore from '../store/PlaylistStore.jsx';
 import { apiClient } from '../api/spotify.js';
+import TransferProgress from '../components/TransferProgress.jsx';
 
 const fetchPlaylist = async ({ queryKey }) => {
   const [_, id] = queryKey;
@@ -17,6 +18,7 @@ export const PlaylistPage = () => {
   const { user } = useAuthStore();
   const { handleTransfer, handleYoutubeLogin, transferring } =
     usePlaylistStore();
+  const [showProgress, setShowProgress] = useState(false);
 
   const { data: playlist, isLoading } = useQuery({
     queryKey: ['playlist', id],
@@ -42,19 +44,23 @@ export const PlaylistPage = () => {
           <h1 className="text-5xl font-bold">{playlist?.name}</h1>
           <p className="text-neutral-400 mt-2">{playlist?.description}</p>
           {user?.youtubeAccessToken ? (
-            <Button
-              onClick={() => handleTransfer(id)}
-              disabled={transferring}
-              className="mt-4 cursor-pointer"
-            >
-              {transferring ? (
-                <div className="min-h-screen flex items-center justify-center">
-                  <Loader height={80} />
+            <div className="mt-4">
+              <Button
+                onClick={() => {
+                  setShowProgress(true);
+                  handleTransfer(id);
+                }}
+                disabled={transferring}
+                className="cursor-pointer"
+              >
+                Transfer to YouTube
+              </Button>
+              {showProgress && transferring && (
+                <div className="mt-4">
+                  <TransferProgress />
                 </div>
-              ) : (
-                'Transfer to YouTube'
               )}
-            </Button>
+            </div>
           ) : (
             <Button
               onClick={handleYoutubeLogin}

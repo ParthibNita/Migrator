@@ -1,4 +1,4 @@
-import { apiClient } from '../api/spotify.js';
+import { apiClient, socket } from '../api/spotify.js';
 import { create } from 'zustand';
 
 const usePlaylistStore = create((set) => ({
@@ -31,6 +31,12 @@ const usePlaylistStore = create((set) => ({
   handleTransfer: async (id) => {
     try {
       set({ transferring: true });
+      if (!socket.connected) {
+        await new Promise((resolve) => {
+          socket.on('connect', resolve);
+        });
+      }
+
       await apiClient.post(`/youtube/transfer/${id}`);
       alert('Playlist transfer complete!');
     } catch (error) {
