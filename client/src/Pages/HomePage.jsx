@@ -1,86 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Float } from '@react-three/drei';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, ArrowRight, Music, Youtube, Sparkles } from 'lucide-react';
 import { Typewriter } from './../components/TypewriterAnim.jsx';
-
-const AnimatedSphere = () => {
-  const meshRef = useRef();
-  useFrame((state) => {
-    meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
-    meshRef.current.rotation.y = state.clock.elapsedTime * 0.2;
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[3, 64, 64]} />
-      <meshStandardMaterial
-        color="#1DB954"
-        wireframe
-        transparent
-        opacity={0.4}
-        emissive="#1DB954"
-        emissiveIntensity={0.2}
-      />
-    </mesh>
-  );
-};
-
-const FloatingNote = ({ position, rotationSpeed }) => {
-  const meshRef = useRef();
-  useFrame((state) => {
-    meshRef.current.rotation.y = state.clock.elapsedTime * rotationSpeed;
-    meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.3;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef} position={position}>
-        <cylinderGeometry args={[0.1, 0.1, 0.8, 8]} />
-        <meshStandardMaterial
-          color="#FF0000"
-          emissive="#FF0000"
-          emissiveIntensity={0.5}
-        />
-      </mesh>
-    </Float>
-  );
-};
-
-const Particles = ({ count = 100 }) => {
-  const particlesRef = useRef();
-  const positions = new Float32Array(count * 3);
-
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-  }
-
-  useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.1;
-    }
-  });
-
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial size={0.05} color="#FFFFFF" transparent opacity={0.6} />
-    </points>
-  );
-};
+import Prism from '@/components/Prism';
 
 export const HomePage = () => {
   const { accessToken, login } = useAuthStore();
@@ -96,39 +21,18 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-gradient-to-br from-neutral-900 via-black to-neutral-900 overflow-hidden">
-      <Canvas camera={{ position: [0, 5, 5], fov: 69 }}>
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={1.5} color="#1DB954" />
-        <pointLight position={[-10, -10, -10]} intensity={1} color="#FF0000" />
-
-        <Stars
-          radius={100}
-          depth={50}
-          count={5000}
-          factor={4}
-          saturation={0}
-          fade
-          speed={0.5}
-        />
-        <Particles count={800} />
-
-        <AnimatedSphere />
-        <FloatingNote position={[2, 1, 0]} rotationSpeed={0.8} />
-        <FloatingNote position={[-2, -1, 2]} rotationSpeed={1.2} />
-        <FloatingNote position={[1, -2, -1]} rotationSpeed={0.6} />
-
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={0.8}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 1.5}
-        />
-      </Canvas>
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />
+    <div className="relative w-full h-screen overflow-hidden">
+      <Prism
+        animationType="rotate"
+        timeScale={0.5}
+        height={3.5}
+        baseWidth={5.5}
+        scale={3.6}
+        hueShift={0}
+        colorFrequency={1}
+        noise={0}
+        glow={1}
+      />
 
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center px-4">
         <motion.h1
@@ -243,21 +147,6 @@ export const HomePage = () => {
         >
           © 2025 Migrator • Made for music lovers 🎸
         </motion.div>
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-green-500 rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 10}s`,
-            }}
-          />
-        ))}
       </div>
     </div>
   );
