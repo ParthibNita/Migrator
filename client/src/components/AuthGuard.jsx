@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import useAuthStore from '../store/authStore';
+import useAuthStore from '../store/AuthStore.jsx';
 import Loader from './Loader.jsx';
 
 const AuthGuard = ({ children }) => {
