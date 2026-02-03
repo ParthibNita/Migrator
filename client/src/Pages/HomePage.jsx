@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import useAuthStore from '../store/authStore';
+import useAuthStore from '../store/AuthStore.js';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, ArrowRight, Music, Youtube, Sparkles } from 'lucide-react';
